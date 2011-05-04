@@ -1,0 +1,37 @@
+- model: keyserver.User
+  pk: 1
+  fields:
+    email: dmassey@gmail.com
+    pubkey: |
+       '-----BEGIN PUBLIC KEY-----
+        MIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEAvpybWljhIqSRgwxGzHEa
+        cPPI7uyenZetZX0jdS3nOZH0YpMd6BlImyHrcPLYIH8j4p29D6MJVPGrG7NAUks3
+        /TXwyKuucgqHJbDSZ2W/o3gE7XgB3Rq7woXC7p3B/FujQYWeWC5DBXZ6bOTUeNzc
+        YD+bgLjmLJG+gUOL4iNyDBmzenwRUi7fsJAK1e9cXTVwXY+Ss71d2DE6InHBDEiB
+        hyv5sIna1MJLmcGuwjJYMaR+URRfJT/kPihnG4un06QdArI17hok9ULdQ4QC1Win
+        rA+J+aWNrasaeSn891mbjkLYcPKS8B36b7RRSITRUPXfha0hGEnkXAC1AjVEEc1B
+        ZwIBEQ==
+        -----END PUBLIC KEY-----'
+
+- model: keyserver.User
+  pk: 2
+  fields:
+    email: ***REMOVED***
+    pubkey: |
+       '-----BEGIN PUBLIC KEY-----
+        MIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEAvpybWljhIqSRgwxGzHEa
+        cPPI7uyenZetZX0jdS3nOZH0YpMd6BlImyHrcPLYIH8j4p29D6MJVPGrG7NAUks3
+        /TXwyKuucgqHJbDSZ2W/o3gE7XgB3Rq7woXC7p3B/FujQYWeWC5DBXZ6bOTUeNzc
+        YD+bgLjmLJG+gUOL4iNyDBmzenwRUi7fsJAK1e9cXTVwXY+Ss71d2DE6InHBDEiB
+        hyv5sIna1MJLmcGuwjJYMaR+URRfJT/kPihnG4un06QdArI17hok9ULdQ4QC1Win
+        rA+J+aWNrasaeSn891mbjkLYcPKS8B36b7RRSITRUPXfha0hGEnkXAC1AjVEEc1B
+        ZwIBEQ==
+        -----END PUBLIC KEY-----'
+
+- model: keyserver.Device
+  pk: 1
+  fields:
+    owner: 1
+    udid: 'E03B689E-7E06-5F39-A7DC-8F0E103C3325'
+    activated: 0
+    pin: 1111
