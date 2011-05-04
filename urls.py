@@ -5,12 +5,14 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 hp = "[0-9A-Z]"
-ipad_guid = '%s{8}\-%s{4}\-%s{4}\-%s{4}\-%s{12})/$' % (hp, hp, hp, hp, hp)
+udid = '(?P<udid>%s{8}\-%s{4}\-%s{4}\-%s{4}\-%s{12})' % (hp, hp, hp, hp, hp)
 urlpatterns = patterns('',
     (r'keyserver/$', 'keyserver.views.index'),
-    (r'keyserver/activate/(?P<activation_id>[0-9a-f]+)/$', 'keyserver.views.activate'), 
-    (r'keyserver/registered/(?P<udid>%s' % (ipad_guid), 'keyserver.views.registered'),
-    # Examples:
+    (r'keyserver/activate/' + udid + '/$' , 'keyserver.views.activate'), 
+    (r'keyserver/activated/' + udid + '/$', 'keyserver.views.activated'),
+    (r'keyserver/get/pubkey/(?P<uid>\d+)/$', 'keyserver.views.getpubkey'),
+    (r'keyserver/send/message/(?P<toid>\d+)/$', 'keyserver.views.sendmessage'),
+    # Examples
     # url(r'^$', 'secdef.views.home', name='home'),
     # url(r'^secdef/', include('secdef.foo.urls')),
 

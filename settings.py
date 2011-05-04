@@ -145,3 +145,7 @@ LOGGING = {
         },
     }
 }
+
+SERIALIZATION_MODULES = { 
+    'yaml': "django.core.serializers.pyyaml" 
+} 
