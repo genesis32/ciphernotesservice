@@ -8,3 +8,9 @@ class StatusCodes:
 
     MessageSent = 0
     MessageSendFailedInvalidUser = 1
+
+    MessageFound = 0
+    MessageNotFound = 1
+
+    KeySent = 0
+    KeySendFailedMessageNotFound = 1

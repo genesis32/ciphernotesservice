@@ -11,7 +11,11 @@ urlpatterns = patterns('',
     (r'keyserver/device/activate/' + udid + '$' , 'keyserver.views.activate'), 
     (r'keyserver/device/activated/' + udid + '$', 'keyserver.views.activated'),
     (r'keyserver/pubkey/get/(?P<uid>\d+)$', 'keyserver.views.getpubkey'),
+    (r'keyserver/message/get/(?P<msgid>\d+)$', 'keyserver.views.getmessage'),
     (r'keyserver/message/send$', 'keyserver.views.sendmessage'),
+    (r'keyserver/contacts/get/' + udid + '$',  'keyserver.views.getcontacts'),
+    (r'keyserver/msgkey/send$',  'keyserver.views.sendmsgkey'),
+
     # Examples
     # url(r'^$', 'secdef.views.home', name='home'),
     # url(r'^secdef/', include('secdef.foo.urls')),

@@ -42,15 +42,47 @@ class TestViews(TestCase):
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
 
+    def test_getmessage(self):
+        c = Client()
+        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
+
+        response = c.get('/keyserver/message/get/1')
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageFound, resp['resultcode'])
+
+    def test_pubenckey(self):
+        c = Client()
+        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
+
+        response = c.post('/keyserver/msgkey/send', { 'msgid': 1, 'key': 'abcdef' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.KeySent, resp['resultcode'])
+
+    def test_listcontacts(self):
+        c = Client()
+        response = c.get('/keyserver/contacts/get/E03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        resp = json.loads(response.content)
+        self.assertEquals(2, len(resp['contacts']))
+        
     def test_pubmessage_failedfr(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 3, 'toid': 2, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', { 'frid': 4, 'toid': 2, 'msg': 'enc message' })
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
 
     def test_pubmessage_failedto(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 3, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 4, 'msg': 'enc message' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
+
+    def test_pubmessage_failedboth(self):
+        c = Client()
+        response = c.post('/keyserver/message/send', { 'frid': 4, 'toid': 3, 'msg': 'enc message' })
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
 

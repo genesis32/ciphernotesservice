@@ -2,7 +2,7 @@ import json
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
-from models import Device, User, Message
+from models import Device, User, Message, Key, UserAssociation
 from statuscodes import StatusCodes
 
 def index(request):
@@ -25,6 +25,18 @@ def getpubkey(request, uid):
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
     
 @csrf_exempt
+def getmessage(request, msgid):
+    response_data = {}
+    try:
+        msg = Message.objects.get(pk=msgid)
+        response_data['resultcode'] = StatusCodes.MessageFound
+        response_data['msg'] = msg.enc_msg
+    except Message.DoesNotExist:
+        response_data['resultcode'] = StatusCodes.MessageNotFound
+
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        
+@csrf_exempt
 def sendmessage(request):
     response_data = {}
     if request.method == 'POST':
@@ -43,6 +55,43 @@ def sendmessage(request):
             response_data['resultcode'] = StatusCodes.MessageSendFailedInvalidUser
 
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
+@csrf_exempt
+def sendmsgkey(request):
+    response_data = {}
+    if request.method == 'POST':
+        msgid = request.POST['msgid']
+        enckey = request.POST['key']
+        try:
+            msg = Message.objects.get(pk=msgid)
+            k = Key(message=msg, key=enckey)
+            k.save()
+            response_data['resultcode'] = StatusCodes.KeySent
+        except Message.DoesNotExist:
+            response_data['resultcode'] = StatusCodes.KeySendFailedMessageNotFound
+
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
+@csrf_exempt
+def getcontacts(request, udid):
+    response_data = {'contacts': []}
+
+    try:
+        d = Device.objects.get(udid=udid)
+        ua1 = UserAssociation.objects.filter(user1=d.owner)
+        for ua in ua1:
+            rdata = (ua.user2.id, ua.user2.email)
+            response_data['contacts'].append(rdata)
+
+        ua2 = UserAssociation.objects.filter(user2=d.owner)
+        for ua in ua2:
+            rdata = (ua.user1.id, ua.user1.email)
+            response_data['contacts'].append(rdata)
+
+    except Device.DoesNotExist:
+        pass
+
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
 @csrf_exempt
 def activate(request, udid):
