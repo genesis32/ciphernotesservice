@@ -5,3 +5,6 @@ class StatusCodes:
 
     DeviceNowActivated = 3
     DeviceActivationFailed = 4
+
+    MessageSent = 0
+    MessageSendFailedInvalidUser = 1

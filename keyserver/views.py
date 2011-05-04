@@ -2,7 +2,7 @@ import json
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
-from models import Device, User
+from models import Device, User, Message
 from statuscodes import StatusCodes
 
 def index(request):
@@ -25,8 +25,24 @@ def getpubkey(request, uid):
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
     
 @csrf_exempt
-def sendmessage(request, toid):
-    pass
+def sendmessage(request):
+    response_data = {}
+    if request.method == 'POST':
+        toid = request.POST['toid']
+        frid = request.POST['frid']
+        try:
+            toUser = User.objects.get(pk=toid)
+            frUser = User.objects.get(pk=frid)
+            msg  = request.POST['msg']
+
+            m = Message(from_user=frUser, to_user=toUser, enc_msg=msg)
+            m.save()
+
+            response_data['resultcode'] = StatusCodes.MessageSent
+        except User.DoesNotExist:
+            response_data['resultcode'] = StatusCodes.MessageSendFailedInvalidUser
+
+        return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
 @csrf_exempt
 def activate(request, udid):

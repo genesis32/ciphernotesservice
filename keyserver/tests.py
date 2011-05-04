@@ -1,5 +1,58 @@
+import json
 from django.test import TestCase
+from django.test.client import Client
+
 from models import *
+from statuscodes import StatusCodes
+
+class TestViews(TestCase):
+    def setUp(self):
+        pass
+
+    def test_activated(self):
+        c = Client()
+        response = c.get('/keyserver/device/activated/E03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        resp = json.loads(response.content)
+        self.assertEquals(resp['resultcode'], StatusCodes.DeviceIsNotActivated)
+
+    def test_doesnotexist(self):
+        c = Client()
+        response = c.get('/keyserver/device/activated/A03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        resp = json.loads(response.content)
+        self.assertEquals(resp['resultcode'], StatusCodes.DeviceNotFound)
+
+    def test_activate(self):
+        c = Client()
+        response = c.post('/keyserver/device/activate/E03B689E-7E06-5F39-A7DC-8F0E103C3325', {'pubkey': '--RSA PUBKEY--'})
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.DeviceNowActivated, resp['resultcode'])
+        
+        d = Device.objects.get(udid='E03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        self.assertEquals('--RSA PUBKEY--', d.owner.pubkey) 
+
+    def test_getpubkey(self):
+        c = Client()
+        response = c.get('/keyserver/pubkey/get/1')
+        resp = json.loads(response.content)
+        assert(resp['pubkey'] != None)
+
+    def test_pubmessage(self):
+        c = Client()
+        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
+
+    def test_pubmessage_failedfr(self):
+        c = Client()
+        response = c.post('/keyserver/message/send', { 'frid': 3, 'toid': 2, 'msg': 'enc message' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
+
+    def test_pubmessage_failedto(self):
+        c = Client()
+        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 3, 'msg': 'enc message' })
+        resp = json.loads(response.content)
+        self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
 
 class TestUserFunctions(TestCase):
     def setUp(self):
