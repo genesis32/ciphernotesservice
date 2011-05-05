@@ -23,12 +23,12 @@ class TestViews(TestCase):
 
     def test_activate(self):
         c = Client()
-        response = c.post('/keyserver/device/activate/E03B689E-7E06-5F39-A7DC-8F0E103C3325', {'pubkey': '--RSA PUBKEY--'})
+        response = c.post('/keyserver/device/activate/E03B689E-7E06-5F39-A7DC-8F0E103C3325', {'pubkey': '--RSA+PUBKEY--'})
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.DeviceNowActivated, resp['resultcode'])
         
         d = Device.objects.get(udid='E03B689E-7E06-5F39-A7DC-8F0E103C3325')
-        self.assertEquals('--RSA PUBKEY--', d.owner.pubkey) 
+        self.assertEquals('--RSA+PUBKEY--', d.owner.pubkey) 
 
     def test_getpubkey(self):
         c = Client()
@@ -85,7 +85,7 @@ class TestViews(TestCase):
         response = c.post('/keyserver/message/send', { 'frid': 4, 'toid': 3, 'msg': 'enc message' })
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
-
+    
 class TestUserFunctions(TestCase):
     def setUp(self):
         pass

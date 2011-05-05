@@ -49,7 +49,7 @@ def sendmessage(request):
 
             m = Message(from_user=frUser, to_user=toUser, enc_msg=msg)
             m.save()
-
+            response_data['msgid']      = m.id
             response_data['resultcode'] = StatusCodes.MessageSent
         except User.DoesNotExist:
             response_data['resultcode'] = StatusCodes.MessageSendFailedInvalidUser
@@ -99,8 +99,10 @@ def activate(request, udid):
     if request.method == 'POST':
         try:
             d = Device.objects.get(udid=udid)
-            d.owner.pubkey = request.POST['pubkey']
+            ls = request.raw_post_data.split('=', 1)
+            d.owner.pubkey = ls[1]
             d.activated = 1
+            
             d.owner.save()
             d.save()
             response_data['resultcode'] = StatusCodes.DeviceNowActivated
