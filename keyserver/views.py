@@ -1,9 +1,12 @@
 import json
+
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
+
 from models import Device, User, Message, Key, UserAssociation
 from statuscodes import StatusCodes
+from utils import get_http_post_params
 
 def index(request):
     t = loader.get_template('keyserver/index.html')
@@ -40,12 +43,13 @@ def getmessage(request, msgid):
 def sendmessage(request):
     response_data = {}
     if request.method == 'POST':
-        toid = request.POST['toid']
-        frid = request.POST['frid']
+        kv = get_http_post_params(request.raw_post_data)
+        toid = kv['toid']
+        frid = kv['frid']
         try:
             toUser = User.objects.get(pk=toid)
             frUser = User.objects.get(pk=frid)
-            msg  = request.POST['msg']
+            msg  = kv['msg']
 
             m = Message(from_user=frUser, to_user=toUser, enc_msg=msg)
             m.save()
@@ -97,10 +101,11 @@ def getcontacts(request, udid):
 def activate(request, udid):
     response_data = {}
     if request.method == 'POST':
+        kv = get_http_post_params(request.raw_post_data)
         try:
             d = Device.objects.get(udid=udid)
-            ls = request.raw_post_data.split('=', 1)
-            d.owner.pubkey = ls[1]
+
+            d.owner.pubkey = kv['pubkey']
             d.activated = 1
             
             d.owner.save()

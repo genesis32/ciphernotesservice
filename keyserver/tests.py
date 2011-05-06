@@ -1,4 +1,5 @@
 import json
+import urllib
 from django.test import TestCase
 from django.test.client import Client
 
@@ -8,6 +9,9 @@ from statuscodes import StatusCodes
 class TestViews(TestCase):
     def setUp(self):
         pass
+
+    def _encformdata(self, params):
+       return urllib.urlencode(params) 
 
     def test_activated(self):
         c = Client()
@@ -23,7 +27,8 @@ class TestViews(TestCase):
 
     def test_activate(self):
         c = Client()
-        response = c.post('/keyserver/device/activate/E03B689E-7E06-5F39-A7DC-8F0E103C3325', {'pubkey': '--RSA+PUBKEY--'})
+        fdata = self._encformdata({'pubkey': '--RSA+PUBKEY--'})
+        response = c.post('/keyserver/device/activate/E03B689E-7E06-5F39-A7DC-8F0E103C3325', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.DeviceNowActivated, resp['resultcode'])
         
@@ -38,13 +43,15 @@ class TestViews(TestCase):
 
     def test_pubmessage(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        fdata = self._encformdata({ 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
 
     def test_getmessage(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        fdata = self._encformdata({ 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
 
@@ -54,7 +61,9 @@ class TestViews(TestCase):
 
     def test_pubenckey(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        fdata = self._encformdata({ 'frid': 1, 'toid': 2, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
+
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
 
@@ -70,19 +79,22 @@ class TestViews(TestCase):
         
     def test_pubmessage_failedfr(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 4, 'toid': 2, 'msg': 'enc message' })
+        fdata = self._encformdata({ 'frid': 4, 'toid': 2, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
 
     def test_pubmessage_failedto(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 1, 'toid': 4, 'msg': 'enc message' })
+        fdata = self._encformdata({ 'frid': 1, 'toid': 4, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
 
     def test_pubmessage_failedboth(self):
         c = Client()
-        response = c.post('/keyserver/message/send', { 'frid': 4, 'toid': 3, 'msg': 'enc message' })
+        fdata = self._encformdata({ 'frid': 4, 'toid': 3, 'msg': 'enc message' })
+        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
     
