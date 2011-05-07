@@ -60,12 +60,26 @@ def sendmessage(request):
 
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
+def getmsgkey(request, msgid):
+    response_data = {}
+    response_data['found'] = 0
+    try:
+        msg = Message.objects.get(pk=msgid)
+        k   = Key.objects.get(message=msg)
+        response_data['found'] = 1
+        response_data['msgkey'] = k.key
+    except Message.DoesNotExist:
+        pass
+
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
 @csrf_exempt
 def sendmsgkey(request):
     response_data = {}
     if request.method == 'POST':
-        msgid = request.POST['msgid']
-        enckey = request.POST['key']
+        kv = get_http_post_params(request.raw_post_data)
+        msgid = kv['msgid']
+        enckey = kv['key']
         try:
             msg = Message.objects.get(pk=msgid)
             k = Key(message=msg, key=enckey)
