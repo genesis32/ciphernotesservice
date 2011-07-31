@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta
 
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
@@ -30,12 +31,13 @@ def getpubkey(request, uid):
 @csrf_exempt
 def getmessage(request, msgid):
     response_data = {}
+    response_data['found'] = 0
     try:
         msg = Message.objects.get(pk=msgid)
-        response_data['resultcode'] = StatusCodes.MessageFound
+        response_data['found'] = 1
         response_data['msg'] = msg.enc_msg
     except Message.DoesNotExist:
-        response_data['resultcode'] = StatusCodes.MessageNotFound
+        pass
 
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
         
@@ -68,7 +70,14 @@ def getmsgkey(request, msgid):
         k   = Key.objects.get(message=msg)
         response_data['found'] = 1
         response_data['msgkey'] = k.key
+        if k.min_to_expire > 0:
+            k.expires = datetime.utcnow() + timedelta(minutes=k.min_to_expire)
+            k.save()
+        else:
+            k.delete()
     except Message.DoesNotExist:
+        pass
+    except Key.DoesNotExist:
         pass
 
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
@@ -80,9 +89,11 @@ def sendmsgkey(request):
         kv = get_http_post_params(request.raw_post_data)
         msgid = kv['msgid']
         enckey = kv['key']
+        min_to_expire = int(kv['mintoexpire'])
+        print min_to_expire
         try:
             msg = Message.objects.get(pk=msgid)
-            k = Key(message=msg, key=enckey)
+            k = Key(message=msg, key=enckey, min_to_expire=min_to_expire)
             k.save()
             response_data['resultcode'] = StatusCodes.KeySent
         except Message.DoesNotExist:

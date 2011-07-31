@@ -67,7 +67,7 @@ class TestViews(TestCase):
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
 
-        fdata = self._encformdata({ 'msgid': 1, 'key': 'abcdef' })
+        fdata = self._encformdata({ 'msgid': 1, 'key': 'abcdef', 'expiredate': '2011-07-29 03:34:43 GMT' })
         response = c.post('/keyserver/msgkey/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.KeySent, resp['resultcode'])

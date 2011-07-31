@@ -10,12 +10,6 @@
     email: ***REMOVED***
     pubkey: '<Test Me 2>' 
 
-- model: keyserver.User
-  pk: 3
-  fields:
-    email: ***REMOVED***
-    pubkey: '<Test Me 3>' 
-
 - model: keyserver.UserAssociation
   pk: 1
   fields:
@@ -24,18 +18,18 @@
     invitation_code: 4323
     invitation_accepted: True
 
-- model: keyserver.UserAssociation
-  pk: 2
-  fields:
-    user1: 1
-    user2: 3
-    invitation_code: 4323
-    invitation_accepted: True
-
 - model: keyserver.Device
   pk: 1
   fields:
     owner: 1
     udid: 'E03B689E-7E06-5F39-A7DC-8F0E103C3325'
+    activated: 0
+    pin: 1111
+
+- model: keyserver.Device
+  pk: 2
+  fields:
+    owner: 2 
+    udid: 'A03B689E-7E06-5F39-A7DC-8F0E103C3325'
     activated: 0
     pin: 1111

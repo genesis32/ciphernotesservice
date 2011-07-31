@@ -24,7 +24,8 @@ class Message(models.Model):
 class Key(models.Model):
     message = models.ForeignKey(Message)
     key     = models.CharField(max_length=256)
-    expires = models.DateField(null=True)
+    min_to_expire = models.IntegerField()
+    expires = models.DateTimeField(null=True)
     
     def __unicode__(self):
         return "key: %s - expires: %s" % (self.key, self.expires)
