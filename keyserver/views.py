@@ -1,4 +1,4 @@
-import json
+import simplejson
 from datetime import datetime, timedelta
 
 from django.template import Context, loader

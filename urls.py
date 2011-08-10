@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     (r'keyserver/message/send$', 'keyserver.views.sendmessage'),
     (r'keyserver/contacts/get/' + udid + '$',  'keyserver.views.getcontacts'),
     (r'keyserver/msgkey/send$',  'keyserver.views.sendmsgkey'),
+    (r'^$', 'keyserver.views.index'),
 
     # Examples
     # url(r'^$', 'secdef.views.home', name='home'),
