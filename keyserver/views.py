@@ -26,7 +26,7 @@ def getpubkey(request, uid):
         pass
 
     response_data['found'] = found
-    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
     
 @csrf_exempt
 def getmessage(request, msgid):
@@ -39,7 +39,7 @@ def getmessage(request, msgid):
     except Message.DoesNotExist:
         pass
 
-    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
         
 @csrf_exempt
 def sendmessage(request):
@@ -60,7 +60,7 @@ def sendmessage(request):
         except User.DoesNotExist:
             response_data['resultcode'] = StatusCodes.MessageSendFailedInvalidUser
 
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
 
 def getmsgkey(request, msgid):
     response_data = {}
@@ -80,7 +80,7 @@ def getmsgkey(request, msgid):
     except Key.DoesNotExist:
         pass
 
-    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
 
 @csrf_exempt
 def sendmsgkey(request):
@@ -99,7 +99,7 @@ def sendmsgkey(request):
         except Message.DoesNotExist:
             response_data['resultcode'] = StatusCodes.KeySendFailedMessageNotFound
 
-    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
 
 @csrf_exempt
 def getcontacts(request, udid):
@@ -120,7 +120,7 @@ def getcontacts(request, udid):
     except Device.DoesNotExist:
         pass
 
-    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
 
 @csrf_exempt
 def activate(request, udid):
@@ -139,7 +139,7 @@ def activate(request, udid):
         except Device.DoesNotExist:
             response_data['resultcode'] = StatusCodes.DeviceNotFound
 
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
 
 def activated(request, udid):
     response_data = {}
@@ -153,4 +153,4 @@ def activated(request, udid):
     except Device.DoesNotExist:
         response_data['resultcode'] = StatusCodes.DeviceNotFound
 
-    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
