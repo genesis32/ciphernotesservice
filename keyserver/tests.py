@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 import urllib
 from django.test import TestCase
 from django.test.client import Client
@@ -21,7 +21,7 @@ class TestViews(TestCase):
 
     def test_doesnotexist(self):
         c = Client()
-        response = c.get('/keyserver/device/activated/A03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        response = c.get('/keyserver/device/activated/R03B689E-7E06-5F39-A7DC-8F0E103C3325')
         resp = json.loads(response.content)
         self.assertEquals(resp['resultcode'], StatusCodes.DeviceNotFound)
 
@@ -57,7 +57,7 @@ class TestViews(TestCase):
 
         response = c.get('/keyserver/message/get/1')
         resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageFound, resp['resultcode'])
+        self.assertEquals(1, resp['found'])
 
     def test_pubenckey(self):
         c = Client()
@@ -67,7 +67,7 @@ class TestViews(TestCase):
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
 
-        fdata = self._encformdata({ 'msgid': 1, 'key': 'abcdef', 'expiredate': '2011-07-29 03:34:43 GMT' })
+        fdata = self._encformdata({ 'msgid': 1, 'key': 'abcdef', 'mintoexpire': '3' })
         response = c.post('/keyserver/msgkey/send', fdata, content_type='application/x-www-form-urlencoded')
         resp = json.loads(response.content)
         self.assertEquals(StatusCodes.KeySent, resp['resultcode'])
@@ -76,7 +76,7 @@ class TestViews(TestCase):
         c = Client()
         response = c.get('/keyserver/contacts/get/E03B689E-7E06-5F39-A7DC-8F0E103C3325')
         resp = json.loads(response.content)
-        self.assertEquals(2, len(resp['contacts']))
+        self.assertEquals(1, len(resp['contacts']))
         
     def test_pubmessage_failedfr(self):
         c = Client()
@@ -128,5 +128,5 @@ class TestMessageSend(TestCase):
     def test_MessageSend(self):
        m1 = Message(from_user = self.u1, to_user = self.u2, enc_msg='<ciphertest>')
        m1.save()
-       key = Key(message=m1, key='deadbeef', expires='2012-10-10') 
+       key = Key(message=m1, key='deadbeef', min_to_expire=1)
        key.save()

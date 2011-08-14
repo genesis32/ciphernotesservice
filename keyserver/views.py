@@ -1,20 +1,21 @@
-import simplejson
+import simplejson as json
 from datetime import datetime, timedelta
 
-from django.template import Context, loader
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
+from django.template import Context, loader
 
 from models import Device, User, Message, Key, UserAssociation
 from statuscodes import StatusCodes
 from utils import get_http_post_params
+
+def render_to_json(results):
+    return HttpResponse(json.dumps(results), mimetype='application/json')
 
 def index(request):
     t = loader.get_template('keyserver/index.html')
     c = Context({})
     return HttpResponse(t.render(c))
 
-@csrf_exempt
 def getpubkey(request, uid):
     response_data = {}
     found = 0
@@ -26,9 +27,8 @@ def getpubkey(request, uid):
         pass
 
     response_data['found'] = found
-    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    return render_to_json(response_data)
     
-@csrf_exempt
 def getmessage(request, msgid):
     response_data = {}
     response_data['found'] = 0
@@ -39,9 +39,8 @@ def getmessage(request, msgid):
     except Message.DoesNotExist:
         pass
 
-    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    return render_to_json(response_data)
         
-@csrf_exempt
 def sendmessage(request):
     response_data = {}
     if request.method == 'POST':
@@ -60,8 +59,8 @@ def sendmessage(request):
         except User.DoesNotExist:
             response_data['resultcode'] = StatusCodes.MessageSendFailedInvalidUser
 
-        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
-
+        return render_to_json(response_data)
+    
 def getmsgkey(request, msgid):
     response_data = {}
     response_data['found'] = 0
@@ -80,9 +79,8 @@ def getmsgkey(request, msgid):
     except Key.DoesNotExist:
         pass
 
-    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    return render_to_json(response_data)
 
-@csrf_exempt
 def sendmsgkey(request):
     response_data = {}
     if request.method == 'POST':
@@ -99,9 +97,8 @@ def sendmsgkey(request):
         except Message.DoesNotExist:
             response_data['resultcode'] = StatusCodes.KeySendFailedMessageNotFound
 
-    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    return render_to_json(response_data)
 
-@csrf_exempt
 def getcontacts(request, udid):
     response_data = {'contacts': []}
 
@@ -120,9 +117,8 @@ def getcontacts(request, udid):
     except Device.DoesNotExist:
         pass
 
-    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    return render_to_json(response_data)
 
-@csrf_exempt
 def activate(request, udid):
     response_data = {}
     if request.method == 'POST':
@@ -139,7 +135,7 @@ def activate(request, udid):
         except Device.DoesNotExist:
             response_data['resultcode'] = StatusCodes.DeviceNotFound
 
-        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+        return render_to_json(response_data)
 
 def activated(request, udid):
     response_data = {}
@@ -153,4 +149,4 @@ def activated(request, udid):
     except Device.DoesNotExist:
         response_data['resultcode'] = StatusCodes.DeviceNotFound
 
-    return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    return render_to_json(response_data)
