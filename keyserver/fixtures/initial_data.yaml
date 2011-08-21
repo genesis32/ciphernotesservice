@@ -10,6 +10,13 @@
     email: ***REMOVED***
     pubkey: '<Test Me 2>' 
 
+- model: keyserver.User
+  pk: 3
+  fields:
+    email: ***REMOVED***
+    pubkey: '<Not Valid>' 
+    pin: 1234
+
 - model: keyserver.UserAssociation
   pk: 1
   fields:

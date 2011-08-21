@@ -2,10 +2,17 @@ from django.db import models
 
 class User(models.Model):
     email   = models.EmailField()
+    pin     = models.CharField(max_length=64, null=True)
     pubkey  = models.CharField(max_length=1024)
+    enabled = models.BooleanField(default="False")
 
     def __unicode__(self):
         return "%s" % (self.email)
+
+class UserSession(models.Model):
+    user = models.ForeignKey(User)
+    session_id = models.CharField(max_length=256)
+    last_update = models.DateTimeField(auto_now=True)
 
 class UserAssociation(models.Model):
     user1 = models.ForeignKey(User, related_name='user1')

@@ -1,16 +1,59 @@
 import simplejson as json
+import uuid
 from datetime import datetime, timedelta
 
 from django.http import HttpResponse, Http404
 from django.template import Context, loader
 
-from models import Device, User, Message, Key, UserAssociation
+from models import Device, User, Message, Key, UserAssociation, UserSession
 from statuscodes import StatusCodes
 from utils import get_http_post_params
+
+def auth_session(request):
+    if not request.POST.has_key('sessionid'):
+        return None
+
+        sessionid = request.POST['sessionid']
+        try:
+            session = UserSession.objects.get(session_id=sessionid)
+            return session.user 
+        except UserSession.DoesNotExist:
+            pass
+        
+    return None 
 
 def render_to_json(results):
     return HttpResponse(json.dumps(results), mimetype='application/json')
 
+def auth(request):
+    response_data = {}
+    success = False
+    if request.method == 'POST':
+        kv = get_http_post_params(request.raw_post_data)
+        uemail = kv['email']
+        upin   = kv['pin']
+         
+        try:
+            u = User.objects.get(email=uemail, pin=upin)
+            existing_session = UserSession.objects.filter(user=u)
+            if len(existing_session) == 0:
+                sessionid = str(uuid.uuid4())
+             
+                us = UserSession()
+                us.user = u
+                us.session_id = sessionid
+                us.save()
+                response_data['sessionid'] = sessionid
+            else:
+                response_data['sessionid'] = existing_session[0].session_id
+
+            success = True
+        except User.DoesNotExist:
+            pass
+
+    response_data['success'] = success 
+    return render_to_json(response_data)
+        
 def index(request):
     t = loader.get_template('keyserver/index.html')
     c = Context({})

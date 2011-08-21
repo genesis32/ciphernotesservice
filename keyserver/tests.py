@@ -13,6 +13,28 @@ class TestViews(TestCase):
     def _encformdata(self, params):
        return urllib.urlencode(params) 
 
+    def test_auth(self):
+        c = Client()
+        fdata = self._encformdata({'email': '***REMOVED***', 'pin': '1234'})
+        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        resp = json.loads(response.content)
+        self.assertEquals(resp['success'], True)
+
+    def test_badauth(self):
+        c = Client()
+        fdata = self._encformdata({'email': '***REMOVED***', 'pin': '9234'})
+        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        resp = json.loads(response.content)
+        self.assertEquals(resp['success'], False)
+
+    def test_2auth(self):
+        c = Client()
+        fdata = self._encformdata({'email': '***REMOVED***', 'pin': '1234'})
+        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        resp = json.loads(response.content)
+        self.assertEquals(resp['success'], True)
+
     def test_activated(self):
         c = Client()
         response = c.get('/keyserver/device/activated/E03B689E-7E06-5F39-A7DC-8F0E103C3325')
