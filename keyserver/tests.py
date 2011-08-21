@@ -1,154 +1,111 @@
 import simplejson as json
 import urllib
+
 from django.test import TestCase
 from django.test.client import Client
 
 from models import *
-from statuscodes import StatusCodes
 
 class TestViews(TestCase):
     def setUp(self):
         pass
 
-    def _encformdata(self, params):
-       return urllib.urlencode(params) 
+    def _auth(self):
+        c = Client()
+        response = c.post('/keyserver/user/auth', {'email': '***REMOVED***', 'pin': '1234'}) 
+        resp = json.loads(response.content)
+        return resp['sessionid']
 
     def test_auth(self):
         c = Client()
-        fdata = self._encformdata({'email': '***REMOVED***', 'pin': '1234'})
-        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        response = c.post('/keyserver/user/auth', {'email': '***REMOVED***', 'pin': '1234'}) 
         resp = json.loads(response.content)
         self.assertEquals(resp['success'], True)
 
     def test_badauth(self):
         c = Client()
-        fdata = self._encformdata({'email': '***REMOVED***', 'pin': '9234'})
-        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        response = c.post('/keyserver/user/auth', {'email': '***REMOVED***', 'pin': '9234'})
         resp = json.loads(response.content)
         self.assertEquals(resp['success'], False)
 
     def test_2auth(self):
         c = Client()
-        fdata = self._encformdata({'email': '***REMOVED***', 'pin': '1234'})
-        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
-        response = c.post('/keyserver/user/auth', fdata, content_type='application/x-www-form-urlencoded')
+        fdata = {'email': '***REMOVED***', 'pin': '1234'}
+        response = c.post('/keyserver/user/auth', fdata)
+        response = c.post('/keyserver/user/auth', fdata)
         resp = json.loads(response.content)
         self.assertEquals(resp['success'], True)
 
     def test_activated(self):
         c = Client()
-        response = c.get('/keyserver/device/activated/E03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        sessid = self._auth()
+        pdata = {'sessionid': sessid}
+        response = c.post('/keyserver/user/activated', pdata)
         resp = json.loads(response.content)
-        self.assertEquals(resp['resultcode'], StatusCodes.DeviceIsNotActivated)
-
-    def test_doesnotexist(self):
-        c = Client()
-        response = c.get('/keyserver/device/activated/R03B689E-7E06-5F39-A7DC-8F0E103C3325')
-        resp = json.loads(response.content)
-        self.assertEquals(resp['resultcode'], StatusCodes.DeviceNotFound)
+        self.assertEquals(resp['resultcode'], 1)
 
     def test_activate(self):
         c = Client()
-        fdata = self._encformdata({'pubkey': '--RSA+PUBKEY--'})
-        response = c.post('/keyserver/device/activate/E03B689E-7E06-5F39-A7DC-8F0E103C3325', fdata, content_type='application/x-www-form-urlencoded')
+        sessid = self._auth()
+        pdata = {'sessionid': sessid, 'pubkey': '--RSA+PUBKEY--'}
+
+        response = c.post('/keyserver/user/activate', pdata) 
         resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.DeviceNowActivated, resp['resultcode'])
+        self.assertEquals(resp['resultcode'], 1)
         
-        d = Device.objects.get(udid='E03B689E-7E06-5F39-A7DC-8F0E103C3325')
-        self.assertEquals('--RSA+PUBKEY--', d.owner.pubkey) 
 
     def test_getpubkey(self):
         c = Client()
-        response = c.get('/keyserver/pubkey/get/1')
+        sessid = self._auth()
+        pdata = {'sessionid': sessid, 'uid': '4b655fff-c043-45b9-b864-7b3a6d26aec3'}
+        response = c.post('/keyserver/pubkey/get', pdata)
         resp = json.loads(response.content)
         assert(resp['pubkey'] != None)
 
     def test_pubmessage(self):
         c = Client()
-        fdata = self._encformdata({ 'frid': 1, 'toid': 2, 'msg': 'enc message' })
-        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
+        sessid = self._auth()
+        pdata = {'sessionid': sessid, 'uid': '4b655fff-c043-45b9-b864-7b3a6d26aec3'}
+        pdata['uid'] = '3639a22b-9280-4603-8a98-467fdc6662f2'
+        pdata['msg'] = 'enc message'
+        response = c.post('/keyserver/message/send', pdata)
         resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
+        self.assertEquals(resp['success'], 1)
 
     def test_getmessage(self):
         c = Client()
-        fdata = self._encformdata({ 'frid': 1, 'toid': 2, 'msg': 'enc message' })
-        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
+        sessid = self._auth()
+        pdata = {'sessionid': sessid, 'uid': '4b655fff-c043-45b9-b864-7b3a6d26aec3'}
+        pdata['uid'] = '3639a22b-9280-4603-8a98-467fdc6662f2'
+        pdata['msg'] = 'enc message'
+        response = c.post('/keyserver/message/send', pdata)
         resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
+        self.assertEquals(resp['success'], 1)
 
-        response = c.get('/keyserver/message/get/1')
+        pdata = {'sessionid': sessid, 'msgid': resp['msgid']}
+        response = c.post('/keyserver/message/get', pdata)
         resp = json.loads(response.content)
         self.assertEquals(1, resp['found'])
 
     def test_pubenckey(self):
         c = Client()
-        fdata = self._encformdata({ 'frid': 1, 'toid': 2, 'msg': 'enc message' })
-        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
-
+        sessid = self._auth()
+        pdata = {'sessionid': sessid, 'uid': '4b655fff-c043-45b9-b864-7b3a6d26aec3'}
+        pdata['uid'] = '3639a22b-9280-4603-8a98-467fdc6662f2'
+        pdata['msg'] = 'enc message'
+        response = c.post('/keyserver/message/send', pdata)
         resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageSent, resp['resultcode'])
+        self.assertEquals(resp['success'], 1)
 
-        fdata = self._encformdata({ 'msgid': 1, 'key': 'abcdef', 'mintoexpire': '3' })
-        response = c.post('/keyserver/msgkey/send', fdata, content_type='application/x-www-form-urlencoded')
+        fdata = { 'sessionid': sessid, 'msgid': resp['msgid'], 'key': 'abcdef', 'mintoexpire': '3' }
+        response = c.post('/keyserver/msgkey/send', fdata)
         resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.KeySent, resp['resultcode'])
+        self.assertEquals(1, resp['resultcode'])
 
     def test_listcontacts(self):
         c = Client()
-        response = c.get('/keyserver/contacts/get/E03B689E-7E06-5F39-A7DC-8F0E103C3325')
+        sessid = self._auth()
+        pdata = {'sessionid': sessid}
+        response = c.post('/keyserver/contacts/get', pdata)
         resp = json.loads(response.content)
         self.assertEquals(1, len(resp['contacts']))
-        
-    def test_pubmessage_failedfr(self):
-        c = Client()
-        fdata = self._encformdata({ 'frid': 4, 'toid': 2, 'msg': 'enc message' })
-        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
-        resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
-
-    def test_pubmessage_failedto(self):
-        c = Client()
-        fdata = self._encformdata({ 'frid': 1, 'toid': 4, 'msg': 'enc message' })
-        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
-        resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
-
-    def test_pubmessage_failedboth(self):
-        c = Client()
-        fdata = self._encformdata({ 'frid': 4, 'toid': 3, 'msg': 'enc message' })
-        response = c.post('/keyserver/message/send', fdata, content_type='application/x-www-form-urlencoded')
-        resp = json.loads(response.content)
-        self.assertEquals(StatusCodes.MessageSendFailedInvalidUser, resp['resultcode'])
-    
-class TestUserFunctions(TestCase):
-    def setUp(self):
-        pass
-
-    def test_CreateUser(self):
-        u1 = User(email='***REMOVED***', pubkey='fillin')
-        u1.save()
-
-    def test_TwoUserAssoc(self):
-        u1 = User(email='***REMOVED***', pubkey='fillin')
-        u1.save()
-        u2 = User(email='***REMOVED***', pubkey='fillin')
-        u2.save()
-
-        ua1 = UserAssociation(user1=u1, user2=u2, invitation_code=4832, invitation_accepted=True)
-        ua1.save()
-
-        assert(ua1.user1 == u1 and ua1.user2 == u2 and ua1.invitation_code == 4832)
-        
-class TestMessageSend(TestCase):
-    def setUp(self):
-        self.u1 = User(email='***REMOVED***', pubkey='fillin')
-        self.u1.save()
-        self.u2 = User(email='***REMOVED***', pubkey='fillin')
-        self.u2.save()
-    
-    def test_MessageSend(self):
-       m1 = Message(from_user = self.u1, to_user = self.u2, enc_msg='<ciphertest>')
-       m1.save()
-       key = Key(message=m1, key='deadbeef', min_to_expire=1)
-       key.save()

@@ -2,20 +2,43 @@
   pk: 1
   fields:
     email: dmassey@gmail.com
-    pubkey: '<Test Me 1>' 
+    activated: False
+    sysid: '819a76e0-0b9b-4c8e-9b48-b8c05cda49ef'
+    pin: 1234
+    num_failures: 0
+    enabled: False
 
 - model: keyserver.User
   pk: 2
   fields:
     email: ***REMOVED***
-    pubkey: '<Test Me 2>' 
+    activated: False
+    sysid: '3639a22b-9280-4603-8a98-467fdc6662f2'
+    pin: 4321
+    num_failures: 0
+    enabled: False
 
 - model: keyserver.User
   pk: 3
   fields:
     email: ***REMOVED***
     pubkey: '<Not Valid>' 
+    sysid: '4b655fff-c043-45b9-b864-7b3a6d26aec3'
     pin: 1234
+    activated: True
+    num_failures: 0
+    enabled: True
+
+- model: keyserver.User
+  pk: 4
+  fields:
+    email: ***REMOVED***
+    pubkey: '<Not Valid>' 
+    sysid: '6b655fff-c043-45b9-b864-7b3a6d26aec3'
+    pin: 1234
+    activated: True
+    num_failures: 0
+    enabled: True
 
 - model: keyserver.UserAssociation
   pk: 1
@@ -25,18 +48,10 @@
     invitation_code: 4323
     invitation_accepted: True
 
-- model: keyserver.Device
-  pk: 1
-  fields:
-    owner: 1
-    udid: 'E03B689E-7E06-5F39-A7DC-8F0E103C3325'
-    activated: 0
-    pin: 1111
-
-- model: keyserver.Device
+- model: keyserver.UserAssociation
   pk: 2
   fields:
-    owner: 2 
-    udid: 'A03B689E-7E06-5F39-A7DC-8F0E103C3325'
-    activated: 0
-    pin: 1111
+    user1: 3
+    user2: 4
+    invitation_code: 4323
+    invitation_accepted: True

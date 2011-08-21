@@ -4,18 +4,16 @@ from django.conf.urls.defaults import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
-hp = "[0-9A-Z]"
-udid = '(?P<udid>%s{8}\-%s{4}\-%s{4}\-%s{4}\-%s{12})' % (hp, hp, hp, hp, hp)
 urlpatterns = patterns('',
     (r'keyserver/$', 'keyserver.views.index'),
+    (r'keyserver/user/activated$', 'keyserver.views.activated'),
     (r'keyserver/user/auth$', 'keyserver.views.auth'),
-    (r'keyserver/device/activate/' + udid + '$' , 'keyserver.views.activate'), 
-    (r'keyserver/device/activated/' + udid + '$', 'keyserver.views.activated'),
-    (r'keyserver/pubkey/get/(?P<uid>\d+)$', 'keyserver.views.getpubkey'),
-    (r'keyserver/message/get/(?P<msgid>\d+)$', 'keyserver.views.getmessage'),
-    (r'keyserver/msgkey/get/(?P<msgid>\d+)$', 'keyserver.views.getmsgkey'),
+    (r'keyserver/user/activate$' , 'keyserver.views.activate'), 
+    (r'keyserver/pubkey/get$', 'keyserver.views.getpubkey'),
+    (r'keyserver/message/get$', 'keyserver.views.getmessage'),
+    (r'keyserver/msgkey/get$', 'keyserver.views.getmsgkey'),
     (r'keyserver/message/send$', 'keyserver.views.sendmessage'),
-    (r'keyserver/contacts/get/' + udid + '$',  'keyserver.views.getcontacts'),
+    (r'keyserver/contacts/get$',  'keyserver.views.getcontacts'),
     (r'keyserver/msgkey/send$',  'keyserver.views.sendmsgkey'),
     (r'^$', 'keyserver.views.index'),
 

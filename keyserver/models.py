@@ -2,9 +2,12 @@ from django.db import models
 
 class User(models.Model):
     email   = models.EmailField()
-    pin     = models.CharField(max_length=64, null=True)
-    pubkey  = models.CharField(max_length=1024)
+    pin     = models.CharField(max_length=256)
+    sysid   = models.CharField(max_length=64, unique=True)
+    pubkey  = models.CharField(max_length=1024, null=True)
     enabled = models.BooleanField(default="False")
+    num_failures = models.IntegerField()
+    activated = models.BooleanField(default="False")
 
     def __unicode__(self):
         return "%s" % (self.email)
@@ -25,24 +28,17 @@ class UserAssociation(models.Model):
 
 class Message(models.Model):
     from_user = models.ForeignKey(User, related_name='from_user')
+    sysid     = models.CharField(max_length=64, unique=True)
     to_user   = models.ForeignKey(User, related_name='to_user')
     enc_msg   = models.TextField()
 
 class Key(models.Model):
     message = models.ForeignKey(Message)
+    sysid   = models.CharField(max_length=64, unique=True)
     key     = models.CharField(max_length=256)
     min_to_expire = models.IntegerField()
     expires = models.DateTimeField(null=True)
     
     def __unicode__(self):
         return "key: %s - expires: %s" % (self.key, self.expires)
-
-class Device(models.Model):
-    owner     = models.ForeignKey(User)
-    udid      = models.CharField(max_length=128)
-    activated = models.BooleanField()
-    pin       = models.IntegerField()
-
-    def __unicode__(self):
-        return "Device: %s UDID:%s" % (self.owner.email, self.udid)
 
