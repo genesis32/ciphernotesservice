@@ -6,9 +6,9 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('',
     (r'keyserver/$', 'keyserver.views.index'),
-    (r'keyserver/user/activated$', 'keyserver.views.activated'),
     (r'keyserver/user/auth$', 'keyserver.views.auth'),
     (r'keyserver/user/activate$' , 'keyserver.views.activate'), 
+    (r'keyserver/user/activated$', 'keyserver.views.activated'),
     (r'keyserver/pubkey/get$', 'keyserver.views.getpubkey'),
     (r'keyserver/message/get$', 'keyserver.views.getmessage'),
     (r'keyserver/msgkey/get$', 'keyserver.views.getmsgkey'),

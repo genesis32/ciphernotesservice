@@ -41,8 +41,10 @@ def auth(request):
                 us.session_id = sessionid
                 us.save()
                 response_data['sessionid'] = sessionid
+                response_data['userid']    = u.sysid
             else:
                 response_data['sessionid'] = existing_session[0].session_id
+                response_data['userid']    = u.sysid
 
             success = 1
         except User.DoesNotExist:
@@ -160,12 +162,12 @@ def getcontacts(request):
     response_data = {'contacts': []}
     ua1 = UserAssociation.objects.filter(user1=cu)
     for ua in ua1:
-        rdata = (ua.user2.id, ua.user2.email)
+        rdata = (ua.user2.sysid, ua.user2.email)
         response_data['contacts'].append(rdata)
 
     ua2 = UserAssociation.objects.filter(user2=cu)
     for ua in ua2:
-        rdata = (ua.user1.id, ua.user1.email)
+        rdata = (ua.user1.sysid, ua.user1.email)
         response_data['contacts'].append(rdata)
 
     return render_to_json(response_data)
@@ -175,11 +177,10 @@ def activate(request):
     if cu == None:
         raise
 
-    response_data = {'resultcode': 0}
-    if not cu.activated:
-        cu.pubkey = request.POST['pubkey']
-        cu.save()
-        response_data['resultcode'] = 1 
+    response_data = {}
+    cu.pubkey = request.POST['pubkey']
+    cu.save()
+    response_data['resultcode'] = 1 
 
     return render_to_json(response_data)
 
