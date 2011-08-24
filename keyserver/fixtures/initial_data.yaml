@@ -2,6 +2,7 @@
   pk: 1
   fields:
     email: dmassey@gmail.com
+    name: ***REMOVED*** ***REMOVED*** (gmail)
     activated: False
     sysid: '819a76e0-0b9b-4c8e-9b48-b8c05cda49ef'
     pin: 1234
@@ -12,6 +13,7 @@
   pk: 2
   fields:
     email: ***REMOVED***
+    name: ***REMOVED*** ***REMOVED*** (msynet)
     activated: False
     sysid: '3639a22b-9280-4603-8a98-467fdc6662f2'
     pin: 4321
@@ -22,6 +24,7 @@
   pk: 3
   fields:
     email: ***REMOVED***
+    name: ***REMOVED*** ***REMOVED*** (paypal)
     pubkey: '<Not Valid>' 
     sysid: '4b655fff-c043-45b9-b864-7b3a6d26aec3'
     pin: 1234
@@ -33,6 +36,7 @@
   pk: 4
   fields:
     email: ***REMOVED***
+    name: ***REMOVED*** ***REMOVED*** (ebay)
     pubkey: '<Not Valid>' 
     sysid: '6b655fff-c043-45b9-b864-7b3a6d26aec3'
     pin: 1234

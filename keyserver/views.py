@@ -53,6 +53,15 @@ def auth(request):
     response_data['success'] = success 
     return render_to_json(response_data)
         
+def getuserprofile(request):
+    cu = auth_session(request) 
+    if cu == None:
+        raise
+   
+    response_data = { 'name': cu.name, 'email': cu.email }
+
+    return render_to_json(response_data)
+
 def index(request):
     t = loader.get_template('keyserver/index.html')
     c = Context({})
@@ -179,6 +188,7 @@ def activate(request):
 
     response_data = {}
     cu.pubkey = request.POST['pubkey']
+    cu.activated = True
     cu.save()
     response_data['resultcode'] = 1 
 

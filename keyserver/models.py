@@ -2,6 +2,7 @@ from django.db import models
 
 class User(models.Model):
     email   = models.EmailField()
+    name    = models.CharField(max_length=256)
     pin     = models.CharField(max_length=256)
     sysid   = models.CharField(max_length=64, unique=True)
     pubkey  = models.CharField(max_length=1024, null=True)
