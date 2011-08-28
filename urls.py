@@ -7,6 +7,7 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
     (r'keyserver/$', 'keyserver.views.index'),
     (r'keyserver/user/auth$', 'keyserver.views.auth'),
+    (r'keyserver/user/logout$', 'keyserver.views.logout_session'),
     (r'keyserver/user/activate$' , 'keyserver.views.activate'), 
     (r'keyserver/user/profile/get$', 'keyserver.views.getuserprofile'),
     (r'keyserver/user/activated$', 'keyserver.views.activated'),

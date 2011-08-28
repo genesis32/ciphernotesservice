@@ -20,6 +20,17 @@ def auth_session(request):
         
     return None 
 
+def logout_session(request):
+    if not request.POST.has_key('sessionid'):
+        raise
+
+    sessionid = request.POST['sessionid']
+    session = UserSession.objects.filter(session_id=sessionid)
+    session.delete()
+
+    response_data = {'status': 'ok'}
+    return render_to_json(response_data)
+
 def render_to_json(results):
     return HttpResponse(json.dumps(results), mimetype='application/json')
 
@@ -28,6 +39,8 @@ def auth(request):
     success = 0
     if request.method == 'POST':
         uemail = request.POST['email']
+
+        # TODO: Encrypt PIN.
         upin   = request.POST['pin']
          
         try:
