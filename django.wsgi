@@ -1,6 +1,6 @@
 import os, sys
 
-sys.path.append('/home/ec2-user/django/ciphernotes')
+sys.path.append('/ciphernotes')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 

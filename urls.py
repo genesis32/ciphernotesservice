@@ -5,7 +5,7 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'keyserver/$', 'keyserver.views.index'),
+    (r'keyserver/$', 'web.views.index'),
     (r'keyserver/user/auth$', 'keyserver.views.auth'),
     (r'keyserver/user/logout$', 'keyserver.views.logout_session'),
     (r'keyserver/user/activate$' , 'keyserver.views.activate'), 
@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     (r'keyserver/message/send$', 'keyserver.views.sendmessage'),
     (r'keyserver/contacts/get$',  'keyserver.views.getcontacts'),
     (r'keyserver/msgkey/send$',  'keyserver.views.sendmsgkey'),
-    (r'^$', 'keyserver.views.index'),
+    (r'^$', 'web.views.index'),
 
     # Examples
     # url(r'^$', 'secdef.views.home', name='home'),
