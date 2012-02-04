@@ -1,4 +1,4 @@
-import simplejson as json
+import json
 import uuid
 from datetime import datetime, timedelta
 

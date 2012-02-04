@@ -1,7 +1,6 @@
-import os
 # Django settings for secdef project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -13,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/ec2-user/django/ciphernotes', # Or path to database file if using sqlite3.
+        'NAME': '/Users/ddm/Proj/CipherNotesService/db/secdef.db', # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -84,7 +83,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '841d1809-8189-4214-998f-6b928e5a781e'
+SECRET_KEY = 'mv38gk!h4$+f-lrp(c^nj-320nf!f4-x#u_gy4cxv03g)d=@$e'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -103,7 +102,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
-    '/home/ec2-user/django/ciphernotes/templates'
+    '/Users/ddm/Proj/CipherNotesService/templates'
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -149,6 +148,3 @@ LOGGING = {
 SERIALIZATION_MODULES = { 
     'yaml': "django.core.serializers.pyyaml" 
 } 
-
-if os.environ.get('DEVELOPMENT', None):
-        from settings_dev import *
