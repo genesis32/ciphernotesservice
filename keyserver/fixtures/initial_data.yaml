@@ -1,7 +1,7 @@
 - model: keyserver.User
   pk: 1
   fields:
-    email: dmassey@gmail.com
+    email: ***REMOVED***
     name: ***REMOVED*** ***REMOVED*** (gmail)
     activated: False
     sysid: '819a76e0-0b9b-4c8e-9b48-b8c05cda49ef'
