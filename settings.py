@@ -66,7 +66,7 @@ STATIC_URL = 'http://media.ciphernotes.com/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = 'http://media.ciphernotes.com/static/admin'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -84,7 +84,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '841d1809-8189-4214-998f-6b928e5a781e'
+SECRET_KEY = '***REMOVED***'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
