@@ -3,4 +3,5 @@
 *.swp
 .tags
 *.tar.gz
+.DS_Store
 sitestatic

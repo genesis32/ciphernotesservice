@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %} Login {% endblock %}
+{% block content %}
+
+Settings
+<form action="/accounts/setup/" method="POST">
+{% csrf_token %}
+<table style="width: 500px">
+{{ form.as_table }}
+</table>
+<p><input type="submit" value="Submit"></p>
+</form>
+{% endblock %}

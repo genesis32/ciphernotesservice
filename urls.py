@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'keyserver/$', 'web.views.index'),
@@ -18,7 +18,11 @@ urlpatterns = patterns('',
     (r'keyserver/contacts/get$',  'keyserver.views.getcontacts'),
     (r'keyserver/msgkey/send$',  'keyserver.views.sendmsgkey'),
     (r'^$', 'web.views.index'),
-
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    url(r'^accounts/setup/$', 'web.views.setup'),
+    url(r'^accounts/profile/$', 'web.views.profile'),
+    url(r'^accounts/logout/$', 'web.views.logout_view'),
+        
     # Examples
     # url(r'^$', 'secdef.views.home', name='home'),
     # url(r'^secdef/', include('secdef.foo.urls')),
@@ -27,5 +31,5 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )

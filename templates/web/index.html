@@ -1,1 +1,36 @@
-<img src="{{ STATIC_URL }}images/logo.png" />
+{% extends "base.html" %}
+
+{% block title %} CipherNotes {% endblock %}
+{% block content %}
+
+<div class="hero-unit">
+    <h2>CipherNotes prevents successful social engineering attacks.</h2>
+    <p>CipherNotes prevents successful social engineering attacks by providing businesses with confidential information a secure means of validating that the person on the other end of the phone is who they say they are.</p>
+    <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+  </div>
+
+  <!-- Example row of columns -->
+  <div class="row">
+    <div class="span4">
+      <h2>Secure</h2>
+       <p>Uses standard AES and RSA encryption.  All sensitive data is stored securely on the mobile device.</p>
+    </div>
+    <div class="span4">
+      <h2>Easy to Use</h2>
+       <p>It is as simple selecting the user, and clicking a button for the authenticator and as easy as opening an email and entering a PIN for the person being authenticated.</p>
+   </div>
+    <div class="span4">
+      <h2>You Are In Control</h2>
+      <p>You control part of the encryption key, the mail server and the mobile users access to the CipherNotes service.</p>
+      <p><a class="btn" href="#">View details &raquo;</a></p>
+    </div>
+  </div>
+
+  <hr>
+
+  <footer>
+    <p>&copy; Company 2012</p>
+  </footer>
+
+
+{% endblock %}
