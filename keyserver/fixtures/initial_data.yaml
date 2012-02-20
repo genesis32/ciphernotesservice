@@ -1,4 +1,14 @@
-- model: keyserver.User
+- model: core.Organization
+  pk: 1
+  fields:
+    name: "CipherNotes Test Organization 1"
+
+- model: core.Organization
+  pk: 2
+  fields:
+    name: "CipherNotes Test Organization 2"
+    
+- model: core.User
   pk: 1
   fields:
     email: ***REMOVED***
@@ -6,10 +16,11 @@
     activated: False
     sysid: '819a76e0-0b9b-4c8e-9b48-b8c05cda49ef'
     pin: 1234
+    organization: 1
     num_failures: 0
     enabled: False
 
-- model: keyserver.User
+- model: core.User
   pk: 2
   fields:
     email: ***REMOVED***
@@ -17,10 +28,11 @@
     activated: False
     sysid: '3639a22b-9280-4603-8a98-467fdc6662f2'
     pin: 4321
+    organization: 1
     num_failures: 0
     enabled: False
 
-- model: keyserver.User
+- model: core.User
   pk: 3
   fields:
     email: ***REMOVED***
@@ -28,11 +40,12 @@
     pubkey: '<Not Valid>' 
     sysid: '4b655fff-c043-45b9-b864-7b3a6d26aec3'
     pin: 1234
+    organization: 2
     activated: True
     num_failures: 0
     enabled: True
 
-- model: keyserver.User
+- model: core.User
   pk: 4
   fields:
     email: ***REMOVED***
@@ -40,6 +53,7 @@
     pubkey: '<Not Valid>' 
     sysid: '6b655fff-c043-45b9-b864-7b3a6d26aec3'
     pin: 1234
+    organization: 2
     activated: True
     num_failures: 0
     enabled: True

@@ -64,7 +64,7 @@ STATIC_ROOT = ''
 STATIC_URL = 'http://media.ciphernotes.com/static/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
+    # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = 'http://media.ciphernotes.com/static/admin/'
 
@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
     'keyserver',
     'web',
     # Uncomment the next line to enable the admin:

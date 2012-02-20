@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %} Login {% endblock %}
+{% block title %} Authentication Request {% endblock %}
 {% block content %}
 
-Settings
-<form action="/accounts/setup/" method="POST">
+<form action="/accounts/auth/request" method="POST">
 {% csrf_token %}
 <table style="width: 500px">
 {{ form.as_table }}

@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     (r'keyserver/msgkey/send$',  'keyserver.views.sendmsgkey'),
     (r'^$', 'web.views.index'),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
-    url(r'^accounts/setup/$', 'web.views.setup'),
+    url(r'^accounts/auth/request$', 'web.views.authrequest'),
     url(r'^accounts/profile/$', 'web.views.profile'),
     url(r'^accounts/logout/$', 'web.views.logout_view'),
         

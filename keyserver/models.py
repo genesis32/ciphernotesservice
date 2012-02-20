@@ -1,17 +1,6 @@
 from django.db import models
 
-class User(models.Model):
-    email   = models.EmailField()
-    name    = models.CharField(max_length=256)
-    pin     = models.CharField(max_length=256)
-    sysid   = models.CharField(max_length=64, unique=True)
-    pubkey  = models.CharField(max_length=1024, null=True)
-    enabled = models.BooleanField(default="False")
-    num_failures = models.IntegerField()
-    activated = models.BooleanField(default="False")
-
-    def __unicode__(self):
-        return "%s" % (self.email)
+from core.models import User, Organization
 
 class UserSession(models.Model):
     user = models.ForeignKey(User)
