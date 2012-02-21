@@ -2,6 +2,8 @@
 
 import cncrypto
 import uuid
+import urllib
+import base64
 
 from django.http import HttpResponse, Http404
 from django.contrib.auth import logout
@@ -19,10 +21,8 @@ def index(request):
     return HttpResponse(t.render(c))
 
 def save_msg(request, to_user, auth_code):
-    aeskey, cphr_authcode = cncrypto.aes_encrypt_authcode(auth_code)
-    aeskeyp1 = aeskey[:len(aeskey)/2]
+    aeskeyp1, aeskeyp2, cphr_authcode = cncrypto.aes_encrypt_authcode(auth_code)
     cphr_aeskeyp1 = cncrypto.rsa_encrypt_aeskey(to_user.pubkey, aeskeyp1)
-    aeskeyp2 = aeskey[len(aeskey)/2:]
 
     msg = Message()
     msg.from_org=request.user.get_profile().organization
@@ -37,6 +37,8 @@ def save_msg(request, to_user, auth_code):
     key.key     = cphr_aeskeyp1
     key.min_to_expire = 1
     key.save()
+
+    print "secdef://%s/%s" % (msg.sysid, urllib.quote_plus(base64.b64encode(aeskeyp2)))
 
 @login_required
 @csrf_protect

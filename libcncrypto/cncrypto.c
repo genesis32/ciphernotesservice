@@ -18,7 +18,7 @@ void generate_aeskey(unsigned char *outkey, int len) {
     RAND_bytes(outkey, len);
 }
 
-void rsa_encrypt(const char *pemkey, const unsigned char *plaintext, unsigned char *ciphertext, int *ciphertext_len) {
+void rsa_encrypt(const char *pemkey, const unsigned char *plaintext, int plaintext_len, unsigned char *ciphertext, int *ciphertext_len) {
     size_t pemkey_len = strlen(pemkey);
 
     BIO *mem = BIO_new_mem_buf((void *)pemkey, strlen(pemkey));
@@ -28,8 +28,13 @@ void rsa_encrypt(const char *pemkey, const unsigned char *plaintext, unsigned ch
     
     BIO_free(mem);
 
-    int ptlen = (int)strlen((const char *)plaintext);
-    *ciphertext_len = RSA_public_encrypt(ptlen, plaintext, ciphertext, rkey, RSA_PKCS1_PADDING);
+    *ciphertext_len = RSA_public_encrypt(plaintext_len, plaintext, ciphertext, rkey, RSA_PKCS1_PADDING);
+    int i=0;
+    printf("ciphertext_len: %d\n", *ciphertext_len);
+    for(i=0; i < *ciphertext_len; i++) {
+        printf("%x", ciphertext[i]);
+    }
+    printf("\n\n");
 }
 
 void aes_decrypt(const char *aeskey, unsigned char *ciphertext, int ciphertext_len, unsigned char *plaintext, int *plaintext_len) {

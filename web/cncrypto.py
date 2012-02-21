@@ -7,7 +7,6 @@ def aes_encrypt_authcode(authcode):
 
     aeskey = create_string_buffer('\000' * 256)
     cncrypto.generate_aeskey(aeskey, 256)
-
     plaintext = create_string_buffer(authcode)
 
     ciphertext = create_string_buffer('\000' * 1024)
@@ -15,11 +14,10 @@ def aes_encrypt_authcode(authcode):
 
     cncrypto.aes_encrypt(aeskey, plaintext, byref(ciphertext), byref(ctlen))
 
-    return base64.b64encode(aeskey), base64.b64encode(ciphertext[0:ctlen.value])
+    return aeskey.raw[:len(aeskey)/2], aeskey.raw[len(aeskey)/2:], base64.b64encode(ciphertext.raw[:ctlen.value])
 
 
 def rsa_encrypt_aeskey(pubkeypem, aeskey):
-    print pubkeypem, aeskey
     cncrypto = CDLL(settings.CNCRYPTO_LIB)
 
     c_plaintext = create_string_buffer(aeskey)
@@ -28,7 +26,10 @@ def rsa_encrypt_aeskey(pubkeypem, aeskey):
     ciphertext = create_string_buffer('\000' * 1024)
     ctlen = c_int()
 
-    cncrypto.rsa_encrypt(c_pubkeypem, c_plaintext, byref(ciphertext), byref(ctlen))
+    cncrypto.rsa_encrypt(c_pubkeypem, c_plaintext, 128, byref(ciphertext), byref(ctlen))
 
-    return base64.b64encode(ciphertext[0:ctlen.value])
+    print repr(ciphertext.raw[:ctlen.value])
+    res = base64.b64encode(ciphertext.raw[:ctlen.value])
+    print "Base64 Encoded CipherKey:", res
+    return res; 
 
