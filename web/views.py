@@ -20,16 +20,15 @@ def index(request):
 def authrequest(request):
     mu = User.objects.filter(organization=request.user.get_profile().organization)
     if request.method == 'POST':
-        form = AuthRequestForm(request.POST, mobile_users=mu)
+        form = AuthRequestForm(request.POST, mobile_user=mu)
         if form.is_valid():
             pass
     else:
-        form = AuthRequestForm(mobile_users=mu)
+        form = AuthRequestForm(mobile_user=mu)
 
     c = RequestContext(request, {'user': request.user, 'form': form})
     return render_to_response('web/authrequest.html', c)
    
-
 @login_required
 def profile(request):
     t = loader.get_template('web/profile.html')

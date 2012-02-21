@@ -1,0 +1,10 @@
+CC=gcc
+CFLAGS=-Wno-deprecated-declarations 
+LIBS=-lssl -lcrypto -lbsd
+
+encrypt: cncrypto.c
+	$(CC) -c cncrypto.c $(CFLAGS) 
+	ld -shared -o libcncrypto.so cncrypto.o $(LIBS) 
+
+clean:
+	rm -f *.pyc *.so *.o;

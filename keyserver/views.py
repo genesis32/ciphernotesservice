@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from django.http import HttpResponse, Http404
 from django.template import Context, loader
 
-from core.models import User
-from models import Message, Key, UserAssociation, UserSession
+from core.models import User, Message, Key, UserAssociation
+from models import UserSession
 
 def auth_session(request):
     if not request.POST.has_key('sessionid'):
