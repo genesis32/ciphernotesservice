@@ -154,5 +154,6 @@ SERIALIZATION_MODULES = {
     'yaml': "django.core.serializers.pyyaml" 
 } 
 
+CNCRYPTO_LIB='/ciphernotes/lib/libcncrypto.so'
 if os.environ.get('DEVELOPMENT', None):
         from settings_dev import *

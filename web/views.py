@@ -1,5 +1,8 @@
 # Create your views here.
 
+import cncrypto
+import uuid
+
 from django.http import HttpResponse, Http404
 from django.contrib.auth import logout
 from forms import AuthRequestForm
@@ -8,12 +11,32 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, loader
 from django.views.decorators.csrf import csrf_protect
 
-from core.models import User
+from core.models import User, Message, Key
 
 def index(request):
     t = loader.get_template('web/index.html')
     c = RequestContext(request, {})
     return HttpResponse(t.render(c))
+
+def save_msg(request, to_user, auth_code):
+    aeskey, cphr_authcode = cncrypto.aes_encrypt_authcode(auth_code)
+    aeskeyp1 = aeskey[:len(aeskey)/2]
+    cphr_aeskeyp1 = cncrypto.rsa_encrypt_aeskey(to_user.pubkey, aeskeyp1)
+    aeskeyp2 = aeskey[len(aeskey)/2:]
+
+    msg = Message()
+    msg.from_org=request.user.get_profile().organization
+    msg.to_user = to_user
+    msg.sysid   = str(uuid.uuid4())
+    msg.enc_msg = cphr_authcode
+    msg.save()
+
+    key = Key()
+    key.message = msg
+    key.sysid   = str(uuid.uuid4())
+    key.key     = cphr_aeskeyp1
+    key.min_to_expire = 1
+    key.save()
 
 @login_required
 @csrf_protect
@@ -22,7 +45,9 @@ def authrequest(request):
     if request.method == 'POST':
         form = AuthRequestForm(request.POST, mobile_user=mu)
         if form.is_valid():
-            pass
+            to_user = form.cleaned_data['mobile_user']
+            auth_code = form.cleaned_data['authorization_code']
+            save_msg(request, to_user, auth_code)
     else:
         form = AuthRequestForm(mobile_user=mu)
 

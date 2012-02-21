@@ -19,6 +19,8 @@ void generate_aeskey(unsigned char *outkey, int len) {
 }
 
 void rsa_encrypt(const char *pemkey, const unsigned char *plaintext, unsigned char *ciphertext, int *ciphertext_len) {
+    size_t pemkey_len = strlen(pemkey);
+
     BIO *mem = BIO_new_mem_buf((void *)pemkey, strlen(pemkey));
     
     RSA *rkey = NULL;
@@ -26,8 +28,6 @@ void rsa_encrypt(const char *pemkey, const unsigned char *plaintext, unsigned ch
     
     BIO_free(mem);
 
-   // *ciphertext = (unsigned char *)malloc(RSA_size(rkey));
-   
     int ptlen = (int)strlen((const char *)plaintext);
     *ciphertext_len = RSA_public_encrypt(ptlen, plaintext, ciphertext, rkey, RSA_PKCS1_PADDING);
 }

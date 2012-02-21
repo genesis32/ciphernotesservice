@@ -30,8 +30,8 @@ class UserAssociation(models.Model):
         return "%s - %s" % (self.user1, self.user2)
 
 class Message(models.Model):
-    from_user = models.ForeignKey(User, related_name='from_user')
-    from_org  = models.ForeignKey(Organization, related_name='from_org')
+    from_user = models.ForeignKey(User, related_name='from_user', null=True, blank=True)
+    from_org  = models.ForeignKey(Organization, related_name='from_org', null=True, blank=True)
     sysid     = models.CharField(max_length=64, unique=True)
     to_user   = models.ForeignKey(User, related_name='to_user')
     enc_msg   = models.TextField()
