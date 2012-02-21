@@ -1,6 +1,8 @@
 *.pyc
 *.db
 *.swp
+*.so
+*.o
 .tags
 *.tar.gz
 .DS_Store

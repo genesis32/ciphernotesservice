@@ -11,10 +11,11 @@
 #define AES_KEYSIZE_BYTES 256
 
 void generate_aeskey(unsigned char *outkey, int len) {
-    int i;
-    for(i=0; i < len; i++) {
-        outkey[i] = (unsigned char)arc4random();          
-    }
+    RAND_load_file("/dev/urandom", 128);
+    int enoughData = RAND_status();
+    assert(enoughData == 1);
+
+    RAND_bytes(outkey, len);
 }
 
 void rsa_encrypt(const char *pemkey, const unsigned char *plaintext, unsigned char *ciphertext, int *ciphertext_len) {
