@@ -12,6 +12,7 @@ from django.shortcuts import render_to_response, redirect
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, loader
 from django.views.decorators.csrf import csrf_protect
+from django.core.mail import EmailMessage
 
 from core.models import User, Message, Key
 
@@ -38,7 +39,17 @@ def save_msg(request, to_user, auth_code):
     key.min_to_expire = 1
     key.save()
 
-    print "secdef://%s/%s" % (msg.sysid, urllib.quote_plus(base64.b64encode(aeskeyp2)))
+    from_email = "noreply@ciphernotes.com"
+    subject = "Auth code request"
+    body = """
+<a href="secdef://%s/%s">Tap Here</a> to get your authentication code.
+""" % (msg.sysid, urllib.quote_plus(base64.b64encode(aeskeyp2)))
+
+    print body
+
+    email_msg = EmailMessage(subject, body, from_email, [to_user.email])
+    email_msg.content_subtype = "html"
+    email_msg.send()
 
 @login_required
 @csrf_protect
