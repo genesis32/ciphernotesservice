@@ -154,11 +154,12 @@ SERIALIZATION_MODULES = {
     'yaml': "django.core.serializers.pyyaml" 
 } 
 
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 EMAIL_HOST='email-smtp.***REMOVED***'
 EMAIL_PORT=465
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER='AKIAJWWRJXTUE2T372NQ'
-EMAIL_HOST_PASSWORD='AhKijaPZde89nPUpYN/OsVC3O923sO6UwnkEO01v7ff7'
-CNCRYPTO_LIB='/ciphernotes/lib/libcncrypto.so'
+EMAIL_HOST_USER='***REMOVED***'
+EMAIL_HOST_PASSWORD='***REMOVED***'
+
+CNCRYPTO_LIB='/ciphernotes/libcncrypto/libcncrypto.so'
 if os.environ.get('DEVELOPMENT', None):
         from settings_dev import *
