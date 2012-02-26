@@ -21,15 +21,30 @@ def index(request):
     c = RequestContext(request, {})
     return HttpResponse(t.render(c))
 
+def create_authmsg(request, to_user, authcode):
+    from_org = request.user.get_profile().organization
+    subject = "Auth request from %s" % (from_org.name)
+    headers = { 'Type': 'AUTHCODE', 'Subject': subject, 'FromName': from_org.name } 
+    body = ''
+    for k, v in headers.items():
+        body += '%s:%s\r\n' % (k, v)
+    body += '\r\n'        
+    body += authcode
+
+    return body
+
 def save_msg(request, to_user, auth_code):
-    aeskeyp1, aeskeyp2, cphr_authcode = cncrypto.aes_encrypt_authcode(auth_code)
+    
+    authmsg = create_authmsg(request, to_user, auth_code)
+
+    aeskeyp1, aeskeyp2, cphr_authmsg = cncrypto.aes_encrypt_authcode(authmsg)
     cphr_aeskeyp1 = cncrypto.rsa_encrypt_aeskey(to_user.pubkey, aeskeyp1)
 
     msg = Message()
     msg.from_org=request.user.get_profile().organization
     msg.to_user = to_user
     msg.sysid   = str(uuid.uuid4())
-    msg.enc_msg = cphr_authcode
+    msg.enc_msg = cphr_authmsg 
     msg.save()
 
     key = Key()

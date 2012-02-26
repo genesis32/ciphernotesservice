@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from keyserver.models import Key
+from core.models import Key
 from datetime import datetime
 class Command(BaseCommand):
     args = ''
