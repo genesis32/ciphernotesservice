@@ -69,7 +69,7 @@ def save_msg(request, to_user, auth_code):
 @login_required
 @csrf_protect
 def authrequest(request):
-    mu = User.objects.filter(organization=request.user.get_profile().organization)
+    mu = User.objects.filter(organization=request.user.get_profile().organization, activated=True)
     if request.method == 'POST':
         form = AuthRequestForm(request.POST, mobile_user=mu)
         if form.is_valid():
