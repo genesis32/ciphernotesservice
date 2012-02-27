@@ -54,8 +54,8 @@ def save_msg(request, to_user, auth_code):
     key.min_to_expire = 1
     key.save()
 
-    from_email = "noreply@ciphernotes.com"
-    subject = "Auth code request"
+    from_email = "%s <noreply@ciphernotes.com>" % (request.user.get_profile().organization.name)
+    subject = "Authorization request" 
     body = """
 <a href="secdef://%s/%s">Tap Here</a> to get your authentication code.
 """ % (msg.sysid, urllib.quote_plus(base64.b64encode(aeskeyp2)))
