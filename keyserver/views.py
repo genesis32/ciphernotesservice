@@ -185,13 +185,15 @@ def getcontacts(request):
     response_data = {'contacts': []}
     ua1 = UserAssociation.objects.filter(user1=cu)
     for ua in ua1:
-        rdata = (ua.user2.sysid, ua.user2.email)
-        response_data['contacts'].append(rdata)
+        if(ua.user2.activated): 
+            rdata = (ua.user2.sysid, ua.user2.email)
+            response_data['contacts'].append(rdata)
 
     ua2 = UserAssociation.objects.filter(user2=cu)
     for ua in ua2:
-        rdata = (ua.user1.sysid, ua.user1.email)
-        response_data['contacts'].append(rdata)
+        if(ua.user1.activated): 
+            rdata = (ua.user1.sysid, ua.user1.email)
+            response_data['contacts'].append(rdata)
 
     return render_to_json(response_data)
 
