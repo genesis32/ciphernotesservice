@@ -11,7 +11,7 @@ class User(models.Model):
     name    = models.CharField(max_length=256)
     pin     = models.CharField(max_length=256)
     sysid   = models.CharField(max_length=64, unique=True)
-    pubkey  = models.CharField(max_length=1024, null=True)
+    pubkey  = models.CharField(max_length=1024, null=True, blank=True)
     enabled = models.BooleanField(default="False")
     organization = models.ForeignKey(Organization)
     num_failures = models.IntegerField()
@@ -23,8 +23,6 @@ class User(models.Model):
 class UserAssociation(models.Model):
     user1 = models.ForeignKey(User, related_name='user1')
     user2 = models.ForeignKey(User, related_name='user2')
-    invitation_code = models.IntegerField()
-    invitation_accepted = models.BooleanField(default="False")
 
     def __unicode__(self):
         return "%s - %s" % (self.user1, self.user2)

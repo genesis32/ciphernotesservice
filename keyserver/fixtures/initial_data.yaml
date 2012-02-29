@@ -63,13 +63,9 @@
   fields:
     user1: 1
     user2: 2
-    invitation_code: 4323
-    invitation_accepted: True
 
 - model: core.UserAssociation
   pk: 2
   fields:
     user1: 3
     user2: 4
-    invitation_code: 4323
-    invitation_accepted: True

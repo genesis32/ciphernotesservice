@@ -45,7 +45,7 @@ def auth(request):
         upin   = request.POST['pin']
          
         try:
-            u = User.objects.get(email=uemail, pin=upin)
+            u = User.objects.get(email__iexact=uemail, pin=upin)
             existing_session = UserSession.objects.filter(user=u)
             if len(existing_session) == 0:
                 sessionid = str(uuid.uuid4())
@@ -62,7 +62,7 @@ def auth(request):
 
             success = 1
         except User.DoesNotExist:
-            pass
+            pass # TODO: Log failure
 
     response_data['success'] = success 
     return render_to_json(response_data)
